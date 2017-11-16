@@ -25,13 +25,13 @@ class SeedDump
         attribute_strings << dump_attribute_new(attribute, value, options) unless options[:exclude].include?(attribute.to_sym)
       end
 
-      open_character, close_character = options[:import] ? ['[', ']'] : ['{', '}']
+      open_character, close_character = options[:import] ? ["((r=#{record.class}.new(", ")); r.id=#{record.id}; r)"] : ['{', '}']
 
       "#{open_character}#{attribute_strings.join(", ")}#{close_character}"
     end
 
     def dump_attribute_new(attribute, value, options)
-      options[:import] ? value_to_s(value) : "#{attribute}: #{value_to_s(value)}"
+      "#{attribute}: #{value_to_s(value)}"
     end
 
     def value_to_s(value)
@@ -73,7 +73,7 @@ class SeedDump
       method = options[:import] ? 'import' : 'create!'
       io.write("#{model_for(records)}.#{method}(")
       if options[:import]
-        io.write("[#{attribute_names(records, options).map {|name| name.to_sym.inspect}.join(', ')}], ")
+        #io.write("[#{attribute_names(records, options).map {|name| name.to_sym.inspect}.join(', ')}], ")
       end
       io.write("[\n  ")
 
